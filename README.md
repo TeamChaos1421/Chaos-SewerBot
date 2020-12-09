@@ -30,4 +30,4 @@ Modified code from XInput-Python's `XInputTest.py` to send right stick X and Y V
 ## Usage:
 1. SSH into the Pi and run `python3 server.py` to start the server
 2. Double Click `client.py` to start the client.
-3. The server will print the cliend address and socket along with the [Y,X] Values of the Right Stick
+3. The server will print the client address and socket along with the [Y,X] Values of the Right Stick
