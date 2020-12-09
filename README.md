@@ -20,7 +20,7 @@ Modified code from XInput-Python's `XInputTest.py` to send right stick X and Y V
 ## Installation & Setup:
 1. Flash an up-to-date version of `Raspberry OS Lite` to a Micro-SD Card
 2. Create a file named `ssh` (without a file extension) to enable ssh
-3. Insert the Micro-SD into the Pi and Boot it up.
+3. Insert the Micro-SD, ethernet, and power into the Pi and Boot it up.
 4. SSH Into the Pi and enter `Raspi-Config` to change the hostname to "Chaos" (Or via editing `/etc/hosts`)
 5. Run `sudo apt-get update && sudo apt-get install samba` to install samba
 6. Replace `/etc/samba/smb.conf` with the file in the Repo & Run `sudo systemctl enable smbd` along with `sudo systemctl start smbd`
