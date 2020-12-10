@@ -8,9 +8,8 @@ try:
 except ImportError:
     import Tkinter as tk
     
-HOST = '192.168.1.84'                                                      # The server's hostname or IP address
-PORT = 4444                                                             # The port used by the server
-
+HOST = '192.168.1.84'																	# The server's hostname or IP address
+PORT = 4444																				# The port used by the server
 
 root = tk.Tk()
 root.title("Chaos 1421")
@@ -19,7 +18,7 @@ canvas.pack()
 
 set_deadzone(DEADZONE_TRIGGER,10)
 
-class Controller:
+class Controller:																		# setup XInput Preview
     def __init__(self, center):
         self.center = center
 
@@ -115,13 +114,13 @@ controllers = (Controller((150., 100.)),
 
 
 while 1:
-	try: 																								# If it breaks, Try Again
+	try: 																				# If it breaks, Try Again
 		with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 			# data = [input(), input()]
 			t = 1
-			while t:
+			while t:																	# Loop retry server connect until success
 				try:
-					s.connect((HOST, PORT))                                     # Connect to RPi
+					s.connect((HOST, PORT))                         	    		    # Connect to RPi
 					t = 0
 				except:
 					print("Failed to connect to server, Retrying in 5 Seconds.")
@@ -145,22 +144,19 @@ while 1:
 							
 						elif event.stick == RIGHT:
 							data = [int(round(event.y * 127)), int(round(event.x * 127))]
-							print(data)
-							s.sendall(str.encode(json.dumps(data), 'utf-8'))            # okay, so this line dumps 'data' as a json string,
-																						# encodes in in UTF-8, 
-																						# and sends in the the RPi in one command
+							print(data)													#prints what the server should be receiving
+							s.sendall(str.encode(json.dumps(data), 'utf-8'))            # okay, so this line dumps 'data' as a json string, encodes in in UTF-8, and sends in the the RPi in one command
 																						
 							data = s.recv(1024)                                         # Recieves the response from RPi "Should be 'OK'"    
 							print('Received:', data.decode())                           # Outputs RPi's response to console                            
-							sleep(0.001)
+							sleep(0.001)												# Slows Code to save on CPU and Network Resources
 							r_thumb_stick_pos = (int(round(controller.r_thumb_pos[0] + 25 * event.x,0)), int(round(controller.r_thumb_pos[1] - 25 * event.y,0)))
 							canvas.coords(controller.r_thumb_stick, (r_thumb_stick_pos[0] - 10, r_thumb_stick_pos[1] - 10, r_thumb_stick_pos[0] + 10, r_thumb_stick_pos[1] + 10))
-
 
 				try:          
 					root.update()
 				except tk.TclError:
 					break
-	except ConnectionAbortedError:
+	except ConnectionAbortedError:														# Loops back to retry connection upon connection loss
 		print("Lost Connection to Server, Retrying in 5 Seconds.")
 		sleep(5)
