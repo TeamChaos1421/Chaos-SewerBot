@@ -114,48 +114,53 @@ controllers = (Controller((150., 100.)),
                Controller((450., 300.)))
 
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-	# data = [input(), input()]
-	t = 1
-	while t:
-		try:
-			s.connect((HOST, PORT))                                     # Connect to RPi
-			t = 0
-		except:
-			print("Failed to connect to server, Retrying in 5 Seconds.")
-			sleep(4)
-			print("Retrying...")
-			sleep(1)
-	while 1:
-		events = get_events()
-		for event in events:
-			controller = controllers[event.user_index]
-			if event.type == EVENT_CONNECTED:
-				canvas.itemconfig(controller.on_indicator, fill="light green")
-				
-			elif event.type == EVENT_DISCONNECTED:
-				canvas.itemconfig(controller.on_indicator, fill="")
-				
-			elif event.type == EVENT_STICK_MOVED:
-				if event.stick == LEFT:
-					l_thumb_stick_pos = (int(round(controller.l_thumb_pos[0] + 25 * event.x,0)), int(round(controller.l_thumb_pos[1] - 25 * event.y,0)))
-					canvas.coords(controller.l_thumb_stick, (l_thumb_stick_pos[0] - 10, l_thumb_stick_pos[1] - 10, l_thumb_stick_pos[0] + 10, l_thumb_stick_pos[1] + 10))
-					
-				elif event.stick == RIGHT:
-					data = [int(round(event.y * 127)), int(round(event.x * 127))]
-					print(data)
-					s.sendall(str.encode(json.dumps(data), 'utf-8'))            # okay, so this line dumps 'data' as a json string,
-																				# encodes in in UTF-8, 
-																				# and sends in the the RPi in one command
-																				
-					data = s.recv(1024)                                         # Recieves the response from RPi "Should be 'OK'"    
-					print('Received:', data.decode())                           # Outputs RPi's response to console                            
-					sleep(0.001)
-					r_thumb_stick_pos = (int(round(controller.r_thumb_pos[0] + 25 * event.x,0)), int(round(controller.r_thumb_pos[1] - 25 * event.y,0)))
-					canvas.coords(controller.r_thumb_stick, (r_thumb_stick_pos[0] - 10, r_thumb_stick_pos[1] - 10, r_thumb_stick_pos[0] + 10, r_thumb_stick_pos[1] + 10))
+while 1:
+	try: 																								# If it breaks, Try Again
+		with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+			# data = [input(), input()]
+			t = 1
+			while t:
+				try:
+					s.connect((HOST, PORT))                                     # Connect to RPi
+					t = 0
+				except:
+					print("Failed to connect to server, Retrying in 5 Seconds.")
+					sleep(4)
+					print("Retrying...")
+					sleep(1)
+			while 1:
+				events = get_events()
+				for event in events:
+					controller = controllers[event.user_index]
+					if event.type == EVENT_CONNECTED:
+						canvas.itemconfig(controller.on_indicator, fill="light green")
+						
+					elif event.type == EVENT_DISCONNECTED:
+						canvas.itemconfig(controller.on_indicator, fill="")
+						
+					elif event.type == EVENT_STICK_MOVED:
+						if event.stick == LEFT:
+							l_thumb_stick_pos = (int(round(controller.l_thumb_pos[0] + 25 * event.x,0)), int(round(controller.l_thumb_pos[1] - 25 * event.y,0)))
+							canvas.coords(controller.l_thumb_stick, (l_thumb_stick_pos[0] - 10, l_thumb_stick_pos[1] - 10, l_thumb_stick_pos[0] + 10, l_thumb_stick_pos[1] + 10))
+							
+						elif event.stick == RIGHT:
+							data = [int(round(event.y * 127)), int(round(event.x * 127))]
+							print(data)
+							s.sendall(str.encode(json.dumps(data), 'utf-8'))            # okay, so this line dumps 'data' as a json string,
+																						# encodes in in UTF-8, 
+																						# and sends in the the RPi in one command
+																						
+							data = s.recv(1024)                                         # Recieves the response from RPi "Should be 'OK'"    
+							print('Received:', data.decode())                           # Outputs RPi's response to console                            
+							sleep(0.001)
+							r_thumb_stick_pos = (int(round(controller.r_thumb_pos[0] + 25 * event.x,0)), int(round(controller.r_thumb_pos[1] - 25 * event.y,0)))
+							canvas.coords(controller.r_thumb_stick, (r_thumb_stick_pos[0] - 10, r_thumb_stick_pos[1] - 10, r_thumb_stick_pos[0] + 10, r_thumb_stick_pos[1] + 10))
 
 
-		try:          
-			root.update()
-		except tk.TclError:
-			break
+				try:          
+					root.update()
+				except tk.TclError:
+					break
+	except ConnectionAbortedError:
+		print("Lost Connection to Server, Retrying in 5 Seconds.")
+		sleep(5)
