@@ -24,7 +24,7 @@ Modified code from XInput-Python's `XInputTest.py` to send right stick X and Y V
 4. SSH Into the Pi and enter `Raspi-Config` to change the hostname to "Chaos" (Or via editing `/etc/hosts`)
 5. Run `sudo apt-get update && sudo apt-get install samba` to install samba
 6. Replace `/etc/samba/smb.conf` with the file in the Repo & Run `sudo systemctl enable smbd` along with `sudo systemctl start smbd`
-7. On a Windows Host Machine, Run (`Win+R`) \\chaos
+7. On a Windows Host Machine, Run (`Win+R`) `\\chaos`
 8. Place Both `Server.py` and `Client.py` in the `Home` folder
 
 ## Usage:
