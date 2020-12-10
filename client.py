@@ -13,7 +13,7 @@ PORT = 4444                                                             # The po
 
 
 root = tk.Tk()
-root.title("XInput")
+root.title("Chaos 1421")
 canvas = tk.Canvas(root, width= 600, height = 400, bg="white")
 canvas.pack()
 
@@ -116,7 +116,16 @@ controllers = (Controller((150., 100.)),
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 	# data = [input(), input()]
-	s.connect((HOST, PORT))                                     # Connect to RPi
+	t = 1
+	while t:
+		try:
+			s.connect((HOST, PORT))                                     # Connect to RPi
+			t = 0
+		except:
+			print("Failed to connect to server, Retrying in 5 Seconds.")
+			sleep(4)
+			print("Retrying...")
+			sleep(1)
 	while 1:
 		events = get_events()
 		for event in events:
