@@ -8,7 +8,7 @@ try:
 except ImportError:
     import Tkinter as tk
     
-HOST = '192.168.1.84'																	# The server's hostname or IP address
+HOST = 'chaos'																	# The server's hostname or IP address
 PORT = 4444																				# The port used by the server
 
 root = tk.Tk()
@@ -143,13 +143,13 @@ while 1:
 							canvas.coords(controller.l_thumb_stick, (l_thumb_stick_pos[0] - 10, l_thumb_stick_pos[1] - 10, l_thumb_stick_pos[0] + 10, l_thumb_stick_pos[1] + 10))
 							
 						elif event.stick == RIGHT:
-							data = [int(round(event.y * 127)), int(round(event.x * 127))]
+							data = [int(round(event.y * 127)), int(round(event.x * -127))]
 							print(data)													#prints what the server should be receiving
 							s.sendall(str.encode(json.dumps(data), 'utf-8'))            # okay, so this line dumps 'data' as a json string, encodes in in UTF-8, and sends in the the RPi in one command
 																						
 							data = s.recv(1024)                                         # Recieves the response from RPi "Should be 'OK'"    
 							print('Received:', data.decode())                           # Outputs RPi's response to console                            
-							sleep(0.001)												# Slows Code to save on CPU and Network Resources
+							sleep(0.05) 												# Slows Code to save on CPU and Network Resources
 							r_thumb_stick_pos = (int(round(controller.r_thumb_pos[0] + 25 * event.x,0)), int(round(controller.r_thumb_pos[1] - 25 * event.y,0)))
 							canvas.coords(controller.r_thumb_stick, (r_thumb_stick_pos[0] - 10, r_thumb_stick_pos[1] - 10, r_thumb_stick_pos[0] + 10, r_thumb_stick_pos[1] + 10))
 
