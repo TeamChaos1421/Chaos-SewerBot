@@ -39,7 +39,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
 					servo1.ChangeDutyCycle((json.loads(data)[0] / 40) + 6)
 					servo2.ChangeDutyCycle((json.loads(data)[1] / 40) + 6)
 		except KeyboardInterrupt:
-			exit()
 			GPIO.cleanup()
+			exit()
 		except:
 			print("your'e an idiot")
